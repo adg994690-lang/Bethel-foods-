@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="en">
+  <head><script>window.EDDY_SITE_CONFIG={"restaurantId":"cd4fcb9b-cad3-4944-af98-35a9506e8cea","adminKey":"87f418126f8c3d46a9172687cfc287356bebb2251b705cd9ffe0b74a3f5dd069","name":"BETHEL","faviconText":"𝕬𝖉","faviconColor":"#704718","menuFileName":"bethel-Menu.html","preview":false};</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BETHEL — Menu</title>
+    <meta name="description" content="Browse the restaurant menu by category, food or drink type, and price." />
+    <link id="my-favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='orange'/><text x='50' y='50' font-family='Arial, sans-serif' font-size='70' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>H</text></svg>" type="image/svg+xml" />
+
+    <script>
+(function(){
+  const cfg = window.EDDY_SITE_CONFIG || {};
+  const brandName = String(cfg.name || 'Restaurant').trim() || 'Restaurant';
+  const iconText = String(cfg.faviconText || 'R').slice(0, 8);
+  const iconColor = /^#[0-9a-f]{6}$/i.test(cfg.faviconColor || '') ? cfg.faviconColor : '#F97316';
+  function makeFavicon(){
+    const link = document.getElementById('my-favicon');
+    if (!link) return;
+    if (cfg.faviconData && /^data:image\//i.test(cfg.faviconData)) { link.href = cfg.faviconData; return; }
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="${iconColor}"/><text x="50" y="52" font-family="Arial,sans-serif" font-size="${iconText.length > 2 ? 38 : 62}" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">${iconText.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]))}</text></svg>`;
+    link.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+  }
+  function brandString(value){
+    return String(value).replace(/HAWI\s+BAR\s*&\s*RESTAURANT/gi, brandName).replace(/HAWI/gi, brandName);
+  }
+  function applyBrand(){
+    document.title = brandName + (document.title.toLowerCase().includes('admin') ? ' - Admin Dashboard' : ' — Menu');
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.setAttribute('content', 'Explore ' + brandName + ' menu. Browse dishes, drinks and prices.');
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      if (!parent || /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/i.test(parent.tagName)) continue;
+      if (/HAWI/i.test(node.nodeValue)) node.nodeValue = brandString(node.nodeValue);
+    }
+    document.querySelectorAll('[title],[aria-label],[alt]').forEach(el => {
+      ['title','aria-label','alt'].forEach(attr => { if (el.hasAttribute(attr)) el.setAttribute(attr, brandString(el.getAttribute(attr))); });
+    });
+    const headName = document.querySelector('#sidebar h1');
+    if (headName) headName.textContent = brandName;
+    const menuName = document.querySelector('h1.text-lg.leading-tight');
+    if (menuName) menuName.textContent = brandName;
+    const safeIcon = iconText.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const logo = document.querySelector('#sidebar .brand-gradient');
+    if (logo) { logo.innerHTML = `<span style="font-weight:800;font-size:19px;color:white;line-height:1">${safeIcon}</span>`; logo.style.background = iconColor; logo.style.boxShadow = 'none'; }
+    const menuMark = document.getElementById('restaurantBrandMark');
+    if (menuMark) { menuMark.textContent = iconText; menuMark.style.background = iconColor; }
+    const viewLink = document.querySelector('a[href*="Menu.html"], a[href*="hawimenu"]');
+    if (viewLink) { try { viewLink.href = new URL(cfg.menuFileName || 'Menu.html', window.location.href).href; } catch(e) { viewLink.href = cfg.menuFileName || 'Menu.html'; } }
+    makeFavicon();
+    // Keep the exact saved restaurant name on dynamically-rendered labels too.
+    if (!window.__eddyBrandObserver && document.body && window.MutationObserver) {
+      const replaceText = (root) => {
+        if (!root) return;
+        if (root.nodeType === Node.TEXT_NODE) {
+          const parent = root.parentElement;
+          if (parent && !/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/i.test(parent.tagName) && /HAWI/i.test(root.nodeValue)) root.nodeValue = brandString(root.nodeValue);
+          return;
+        }
+        if (root.nodeType !== Node.ELEMENT_NODE && root !== document) return;
+        if (root.nodeType === Node.ELEMENT_NODE && /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/i.test(root.tagName)) return;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let textNode;
+        while ((textNode = walker.nextNode())) {
+          const parent = textNode.parentElement;
+          if (parent && !/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/i.test(parent.tagName) && /HAWI/i.test(textNode.nodeValue)) textNode.nodeValue = brandString(textNode.nodeValue);
+        }
+        if (root.querySelectorAll) root.querySelectorAll('[title],[aria-label],[alt]').forEach(el => {
+          ['title','aria-label','alt'].forEach(attr => { if (el.hasAttribute(attr) && /HAWI/i.test(el.getAttribute(attr))) el.setAttribute(attr, brandString(el.getAttribute(attr))); });
+        });
+      };
+      window.__eddyBrandObserver = new MutationObserver(records => records.forEach(record => {
+        record.addedNodes && record.addedNodes.forEach(replaceText);
+        if (record.type === 'attributes' && record.target && ['title','aria-label','alt'].includes(record.attributeName)) {
+          const value = record.target.getAttribute(record.attributeName) || '';
+          if (/HAWI/i.test(value)) record.target.setAttribute(record.attributeName, brandString(value));
+        }
+      }));
+      window.__eddyBrandObserver.observe(document.body, {subtree:true,childList:true,attributes:true,attributeFilter:['title','aria-label','alt']});
+    }
+  }
+  function runBrandSafely(){
+    try { applyBrand(); }
+    catch (error) { console.error('Restaurant branding could not be fully applied:', error); }
+    finally { const guard = document.getElementById('eddy-brand-guard'); if (guard) guard.remove(); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runBrandSafely, {once:true});
+  else runBrandSafely();
+  window.EDDY_APPLY_BRAND = runBrandSafely;
+})();
+</script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              midnight: "#111111",
+              charcoal: "#444444",
+              steel: "#777777",
+              cloud: "#F9FAFB",
+              cool: "#E5E7EB",
+              primary: "#E43D30",
+              coral: "#F15A3C",
+              orange: "#F97316",
+              salmon: "#FF6B6B",
+              gold: "#D4A843",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              display: ["'Plus Jakarta Sans'", "Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        background: #F9FAFB;
+        color: #111111;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+        font-weight: 800;
+      }
+
+      .brand-grad {
+        background-image: linear-gradient(90deg, #E43D30 0%, #F15A3C 50%, #F97316 100%);
+      }
+
+      .brand-text {
+        background-image: linear-gradient(90deg, #E43D30, #F15A3C, #F97316);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .glass-nav {
+        background: #FFFFFF;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        border-bottom: 1px solid #E5E7EB;
+        box-shadow: none;
+        transition: background .22s ease, backdrop-filter .22s ease, box-shadow .22s ease, border-color .22s ease;
+      }
+
+      .glass-nav.is-category-pinned {
+        background: rgba(255, 255, 255, .66);
+        -webkit-backdrop-filter: blur(18px) saturate(145%);
+        backdrop-filter: blur(18px) saturate(145%);
+        border-bottom-color: rgba(255, 255, 255, .72);
+        box-shadow: 0 6px 22px rgba(17, 17, 17, .06);
+      }
+
+      .glass-nav.is-category-pinned .saved-toggle,
+      .glass-nav.is-category-pinned .header-icon-button {
+        background: rgba(255, 255, 255, .34);
+        border-color: rgba(255, 255, 255, .66);
+        box-shadow: none;
+      }
+
+      /* Give the fixed header room, then keep the category row pinned below it. */
+      .menu-browse-area { padding-top: 104px; }
+      #categoryPinSentinel { height: 0; margin: 0; padding: 0; pointer-events: none; }
+      #categoryControls {
+        position: sticky;
+        top: 80px;
+        z-index: 35;
+        min-width: 0;
+        margin: 0 -8px 12px;
+        padding: 7px 8px;
+        border: 1px solid transparent;
+        border-radius: 16px;
+        background: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        transition: background .22s ease, border-color .22s ease, box-shadow .22s ease, padding .22s ease;
+      }
+      #categoryControls.is-pinned {
+        background: rgba(255, 255, 255, .68);
+        -webkit-backdrop-filter: blur(20px) saturate(150%);
+        backdrop-filter: blur(20px) saturate(150%);
+        border-color: rgba(255, 255, 255, .82);
+        box-shadow: 0 9px 26px rgba(17, 17, 17, .09);
+      }
+      #categoryControls #catBar { min-width: 0; flex-wrap: wrap; overflow: visible; }
+      #categoryControls.is-pinned #catBar { flex-wrap: wrap; overflow: visible; }
+
+      .card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 1rem;
+        transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px -10px rgba(228, 61, 48, 0.12);
+      }
+
+      /* Category chips */
+      .chip {
+        border-radius: 9999px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid #E5E7EB;
+        background: #fff;
+        color: #111111;
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        transition: all .2s;
+        white-space: nowrap;
+      }
+
+      .chip:hover {
+        border-color: #E43D30;
+        color: #E43D30;
+      }
+
+      .chip.on {
+        background-image: linear-gradient(90deg, #E43D30, #F15A3C, #F97316);
+        color: #fff;
+        border-color: transparent;
+      }
+
+      /* Search icon button matching the pickup website */
+      .search-toggle {
+        color: #E43D30;
+      }
+
+      .search-toggle.on {
+        color: #fff;
+        background-image: linear-gradient(90deg, #E43D30, #F15A3C, #F97316);
+      }
+
+      /* Unframed X icon to close the search panel without clearing filters. */
+      .search-close-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 40px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #777777;
+        font-size: 20px;
+        cursor: pointer;
+        transition: color .18s ease, transform .18s ease;
+      }
+
+      .search-close-icon:hover {
+        color: #E43D30;
+        transform: scale(1.08);
+      }
+
+      .scroll-x {
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .scroll-x::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Black Food/Drink icons with no background */
+      .kd {
+        width: 1.6rem;
+        height: 1.6rem;
+        flex: 0 0 1.6rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #111111;
+        background: transparent;
+      }
+
+      .kd iconify-icon {
+        display: block;
+        color: #111111;
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+
+      /* Category label overlay on each menu image */
+      .menu-image-wrap {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .menu-category-tag {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 1;
+        max-width: calc(100% - 24px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 4px 10px;
+        border: 1px solid rgba(229, 231, 235, .95);
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, .88);
+        color: #111111;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      /* Developer attribution */
+      .footer-attribution-row {
+        position: fixed;
+        right: max(12px, calc((100vw - 72rem) / 2 + 16px));
+        bottom: 8px;
+        z-index: 30;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: auto;
+        min-width: 0;
+        max-width: calc(100vw - 24px);
+      }
+
+      .footer-attribution-row .developer-attribution {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        box-sizing: border-box;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 0;
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 400;
+        color: #777777;
+        line-height: 1.25;
+        background: transparent;
+      }
+
+      .footer-attribution-row .developer-attribution > span {
+        min-width: 0;
+      }
+
+      .footer-attribution-row .brand-script {
+        font-family: 'Dancing Script', cursive;
+        font-size: 16px;
+        color: #111111;
+        font-weight: 700;
+        letter-spacing: .5px;
+        vertical-align: middle;
+      }
+
+      .footer-attribution-row .brand-divider {
+        color: #52525b;
+        margin: 0 3px;
+        font-weight: 300;
+      }
+
+      .footer-attribution-row .brand-tech {
+        color: #F97316;
+        font-weight: 700;
+        letter-spacing: -.2px;
+        vertical-align: middle;
+      }
+
+      .footer-attribution-row .eddy-mark {
+        display: inline-block;
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+
+      .footer-attribution-row .eddy-mark svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .footer-attribution-row .em-outline {
+        transform-box: view-box;
+        transform-origin: 60px 60px;
+        animation: em-cloud 4s ease-in-out infinite;
+      }
+
+      .footer-attribution-row .em-power {
+        transform-box: view-box;
+        transform-origin: 60px 60px;
+        animation: em-power 4s ease-in-out infinite;
+      }
+
+      .footer-attribution-row .em-shield {
+        transform-box: view-box;
+        transform-origin: 60px 60px;
+        opacity: 0;
+        animation: em-shield 4s ease-in-out infinite;
+      }
+
+      .footer-attribution-row .em-check {
+        stroke-dasharray: 55;
+        stroke-dashoffset: 55;
+        animation: em-check 4s ease-in-out infinite;
+      }
+
+      @keyframes em-cloud {
+        0%, 12% {
+          opacity: 1;
+          transform: scale(1) rotate(0);
+        }
+
+        30%, 75% {
+          opacity: 0;
+          transform: scale(.65) rotate(-18deg);
+        }
+
+        92%, 100% {
+          opacity: 1;
+          transform: scale(1) rotate(0);
+        }
+      }
+
+      @keyframes em-power {
+        0%, 12% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
+
+        22% {
+          opacity: .9;
+          transform: translate(0, 9px) scale(.8);
+        }
+
+        32%, 75% {
+          opacity: 0;
+          transform: translate(0, 15px) scale(.35);
+        }
+
+        90%, 100% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
+      }
+
+      @keyframes em-shield {
+        0%, 22% {
+          opacity: 0;
+          transform: scale(.55) rotate(-12deg);
+        }
+
+        38% {
+          opacity: 1;
+          transform: scale(1.08) rotate(0);
+        }
+
+        45%, 76% {
+          opacity: 1;
+          transform: scale(1) rotate(0);
+        }
+
+        92%, 100% {
+          opacity: 0;
+          transform: scale(.7);
+        }
+      }
+
+      @keyframes em-check {
+        0%, 36% {
+          stroke-dashoffset: 55;
+          opacity: 0;
+        }
+
+        40% {
+          opacity: 1;
+          stroke-dashoffset: 55;
+        }
+
+        54%, 76% {
+          opacity: 1;
+          stroke-dashoffset: 0;
+        }
+
+        90%, 100% {
+          opacity: 0;
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .footer-attribution-row .eddy-mark * {
+          animation: none !important;
+        }
+
+        .footer-attribution-row .em-outline,
+        .footer-attribution-row .em-power {
+          display: none;
+        }
+
+        .footer-attribution-row .em-shield {
+          opacity: 1;
+        }
+
+        .footer-attribution-row .em-check {
+          opacity: 1;
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .footer-attribution-row {
+          right: 8px;
+          bottom: 6px;
+          justify-content: flex-end;
+        }
+
+        .footer-attribution-row .developer-attribution {
+          gap: 4px;
+          font-size: 10px;
+          padding: 4px 0;
+        }
+
+        .footer-attribution-row .brand-script {
+          font-size: 15px;
+        }
+
+        .footer-attribution-row .eddy-mark {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      /* Phone-only layout refinements: desktop and tablet remain unchanged. */
+      @media (max-width: 640px) {
+        /* Keep the Food/Drink selector in one compact horizontal row. */
+        #kindBar {
+          flex-wrap: nowrap !important;
+          overflow-x: auto;
+          overflow-y: hidden;
+          white-space: nowrap;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding-bottom: 2px;
+        }
+
+        #kindBar::-webkit-scrollbar {
+          display: none;
+        }
+
+        #kindBar > .chip {
+          flex: 0 0 auto;
+          padding: 7px 10px;
+          font-size: 11px;
+          gap: 4px;
+        }
+
+        /* Show ALL menu categories: flow across each row, then wrap to the next. */
+        #catBar {
+          display: flex;
+          flex: 1 1 0%;
+          min-width: 0;
+          flex-wrap: wrap !important;
+          align-content: flex-start;
+          align-items: flex-start;
+          justify-content: flex-start;
+          gap: 6px;
+          overflow: visible !important;
+          white-space: normal !important;
+          padding: 0 0 2px;
+        }
+
+        #catBar::-webkit-scrollbar {
+          display: none;
+        }
+
+        #catBar > .chip {
+          flex: 0 0 auto;
+          max-width: 100%;
+          padding: 7px 9px;
+          font-size: 11px;
+          gap: 4px;
+          white-space: nowrap;
+        }
+
+        /* Two menu cards side by side on phones. */
+        #menu {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        #menu > article.card {
+          min-width: 0;
+          border-radius: 12px;
+        }
+
+        #menu > .card:only-child {
+          grid-column: 1 / -1;
+        }
+
+        /* Fill the phone image box and remove empty side spaces. */
+        #menu > article.card .menu-image-wrap {
+          position: relative;
+          height: 124px;
+          min-height: 124px;
+          background: #F9FAFB;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+
+        #menu > article.card .menu-image-wrap > img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          max-height: none;
+          object-fit: cover !important;
+          object-position: center;
+          transform: scale(1.04);
+          transform-origin: center;
+        }
+
+        /* Keep the category tag compact over the image. */
+        #menu > article.card .menu-category-tag {
+          top: 6px;
+          left: 6px;
+          max-width: calc(100% - 12px);
+          padding: 3px 6px;
+          font-size: 9px;
+        }
+
+        /* Compact card spacing. */
+        #menu > article.card > .p-4 {
+          padding: 9px;
+        }
+
+        /* Food/drink icons. */
+        #menu .kd {
+          width: 17px;
+          height: 17px;
+          flex: 0 0 17px;
+        }
+
+        #menu .kd iconify-icon {
+          font-size: 13px;
+        }
+
+        /* Food name: a little larger and bolder. */
+        #menu h3 {
+          font-size: 13px !important;
+          font-weight: 800 !important;
+          line-height: 1.25;
+          overflow-wrap: anywhere;
+        }
+
+        /* Category and supporting labels. */
+        #menu .text-xs {
+          font-size: 10px;
+          line-height: 1.3;
+        }
+
+        /* Food description. */
+        #menu p.text-sm {
+          margin-top: 6px;
+          font-size: 11px;
+          line-height: 1.35;
+        }
+
+        /* Price section spacing. */
+        #menu article .mt-4.pt-2 {
+          margin-top: 9px;
+          padding-top: 7px;
+          align-items: flex-start;
+          flex-wrap: wrap;
+        }
+
+        /* ETB price: slightly larger and bolder. */
+        #menu .font-display.text-lg {
+          font-size: 13.5px !important;
+          font-weight: 800 !important;
+          line-height: 1.3;
+          overflow-wrap: anywhere;
+        }
+
+      }
+
+
+
+
+
+      .card-footer-actions { display: inline-flex; align-items: center; justify-content: flex-end; gap: 7px; min-width: 0; }
+      /* Keep the dish price on the left and the save star at the far right. */
+      .dish-price-save-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
+      .dish-price-save-row .dish-save-button { margin-left: auto; }
+      .dish-save-button { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; padding: 0; border: 1px solid #E5E7EB; border-radius: 10px; background: #FFFFFF; color: #777777; cursor: pointer; font-size: 17px; transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+      .dish-save-button:hover { color: #E43D30; border-color: #FDBA74; background: #FFF7ED; transform: translateY(-1px); }
+      .dish-save-button.is-saved { color: #F97316; background: #FFF7ED; border-color: #FDBA74; box-shadow: 0 0 0 2px rgba(249,115,22,.08), 0 0 12px rgba(249,115,22,.18); }
+      .dish-save-button.is-saved iconify-icon { color: #F97316; filter: drop-shadow(0 0 2px rgba(249,115,22,.65)) drop-shadow(0 0 6px rgba(249,115,22,.38)); }
+      .dish-save-button.is-saved iconify-icon svg path { fill: currentColor !important; stroke: currentColor !important; }
+      body.utility-modal-open { overflow: hidden; }
+      @media (max-width: 640px) {
+        .card-footer-actions { gap: 4px; }
+        .dish-save-button { width: 29px; height: 29px; flex-basis: 29px; border-radius: 8px; font-size: 16px; }
+      }
+
+      /* Header actions and utility dialogs for saved dishes and the quick guide. */
+      .header-actions { flex: 0 0 auto; }
+      .saved-toggle, .header-icon-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 40px;
+        border: 1px solid #E5E7EB;
+        border-radius: 13px;
+        background: rgba(255,255,255,.9);
+        color: #111111;
+        box-shadow: 0 3px 10px rgba(17,17,17,.04);
+        transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      }
+      .saved-toggle { padding: 0 11px; font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+      .saved-toggle > iconify-icon { color: #E43D30; font-size: 17px; }
+      .saved-toggle:hover, .header-icon-button:hover { border-color: #F97316; background: #FFF7F2; transform: translateY(-1px); }
+      .header-icon-button { width: 40px; padding: 0; color: #E43D30; font-size: 20px; }
+      .saved-count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: #FFF0E8; color: #C2410C; font-size: 10px; line-height: 1; }
+
+      .category-guidance[hidden] { display: none !important; }
+      .category-guidance {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        max-width: 100%;
+        margin-top: 10px;
+        padding: 9px 12px;
+        border: 1px solid rgba(249,115,22,.36);
+        border-radius: 12px;
+        background: #FFF7ED;
+        color: #9A3412;
+        font-size: 12px;
+        font-weight: 750;
+        box-shadow: 0 8px 20px rgba(249,115,22,.08);
+        animation: categoryGuidanceIn .35s ease both;
+      }
+      .category-guidance iconify-icon { flex: 0 0 auto; font-size: 17px; }
+      #categoryControls.category-needs-attention #catBar { outline: 2px solid rgba(249,115,22,.72); outline-offset: 5px; border-radius: 12px; animation: categoryNudge 1.1s ease-in-out 2; }
+      #searchToggle.category-search-attention { border-color: #F97316; background: #FFF7ED; box-shadow: 0 0 0 3px rgba(249,115,22,.13), 0 0 15px rgba(249,115,22,.22); animation: categorySearchButtonAttention 1.1s ease-in-out 2; }
+      #searchToggle.category-search-attention iconify-icon { animation: categorySearchIconAttention 1.1s ease-in-out 2; }
+      @keyframes categoryGuidanceIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes categoryNudge { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-3px); } 60% { transform: translateY(1px); } }
+      @keyframes categorySearchButtonAttention { 0%,100% { transform: translateY(0) scale(1); } 25% { transform: translateY(-4px) scale(1.05); } 52% { transform: translateY(1px) scale(.98); } 76% { transform: translateY(-2px) scale(1.02); } }
+      @keyframes categorySearchIconAttention { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-14deg); } 50% { transform: rotate(12deg); } 75% { transform: rotate(-7deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        #searchToggle.category-search-attention,
+        #searchToggle.category-search-attention iconify-icon { animation: none !important; }
+      }
+
+      .utility-overlay[hidden] { display: none !important; }
+      .utility-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(17,17,17,.42);
+        -webkit-backdrop-filter: blur(9px);
+        backdrop-filter: blur(9px);
+        opacity: 0;
+        transition: opacity .22s ease;
+      }
+      .utility-overlay.is-open { opacity: 1; }
+      .utility-modal {
+        box-sizing: border-box;
+        width: min(100%, 520px);
+        max-height: min(84dvh, 760px);
+        overflow: auto;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,.85);
+        border-radius: 22px;
+        background: #FFFFFF;
+        color: #111111;
+        box-shadow: 0 24px 70px rgba(0,0,0,.22);
+        transform: translateY(10px) scale(.985);
+        transition: transform .24s cubic-bezier(.2,.8,.2,1);
+      }
+      .utility-overlay.is-open .utility-modal { transform: translateY(0) scale(1); }
+      .utility-modal-header, .utility-title-group { display: flex; align-items: center; }
+      .utility-modal-header { justify-content: space-between; gap: 14px; margin-bottom: 17px; }
+      .utility-title-group { min-width: 0; gap: 11px; }
+      .utility-modal-mark { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 42px; border-radius: 14px; background: linear-gradient(135deg,#E43D30,#F97316); color: #fff; font-size: 20px; }
+      .utility-modal-header h2 { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 800; }
+      .utility-modal-header p { margin: 4px 0 0; color: #777777; font-size: 11px; }
+      .utility-close { display: grid; place-items: center; width: 35px; height: 35px; flex: 0 0 35px; padding: 0; border: 1px solid #E5E7EB; border-radius: 50%; background: #fff; color: #6B7280; font-size: 18px; cursor: pointer; }
+      .utility-close:hover { background: #FFF1EC; color: #C2410C; border-color: #FED7AA; }
+      .saved-dishes-list { display: grid; gap: 9px; }
+      .saved-empty { padding: 28px 16px; border: 1px dashed #D1D5DB; border-radius: 15px; text-align: center; color: #6B7280; }
+      .saved-empty iconify-icon { display: block; margin: 0 auto 9px; color: #F97316; font-size: 28px; }
+      .saved-empty strong { display: block; color: #111111; font-size: 13px; }
+      .saved-empty p { margin: 5px 0 0; font-size: 11px; line-height: 1.5; }
+      .saved-dish-row { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px; border: 1px solid #E5E7EB; border-radius: 13px; background: #fff; }
+      .saved-dish-thumb { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; overflow: hidden; border-radius: 9px; background: #FFF7ED; color: #C2410C; font-size: 19px; }
+      .saved-dish-thumb img { width: 100%; height: 100%; object-fit: cover; }
+      .saved-dish-copy { min-width: 0; flex: 1; }
+      .saved-dish-copy strong { display: block; overflow-wrap: anywhere; color: #111111; font-size: 12px; line-height: 1.35; }
+      .saved-dish-copy span { display: block; margin-top: 3px; color: #777777; font-size: 10px; }
+      .saved-dish-price { flex: 0 0 auto; color: #E43D30; font-size: 11px; font-weight: 800; white-space: nowrap; }
+      .saved-remove { display: grid; place-items: center; width: 29px; height: 29px; flex: 0 0 29px; border: 0; border-radius: 8px; background: #FFF1EC; color: #C2410C; font-size: 16px; cursor: pointer; }
+      .saved-total-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 15px; padding: 14px 2px 0; border-top: 1px solid #E5E7EB; }
+      .saved-total-label { margin: 0; font-size: 12px; font-weight: 800; }
+      .saved-total-note { margin: 4px 0 0; color: #777777; font-size: 10px; }
+      #savedTotal { color: #E43D30; font-size: 17px; white-space: nowrap; }
+      .help-steps { display: grid; gap: 13px; }
+      .help-step { display: grid; grid-template-columns: 125px minmax(0,1fr); align-items: center; gap: 13px; padding: 12px; border: 1px solid #F0F0F0; border-radius: 15px; background: #FCFCFC; }
+      .help-step h3 { margin: 0; font-size: 12px; font-weight: 800; }
+      .help-step p { margin: 5px 0 0; color: #6B7280; font-size: 11px; line-height: 1.55; }
+      .help-demo { display: flex; align-items: center; justify-content: center; min-height: 68px; overflow: hidden; border-radius: 11px; background: #FFF4EC; }
+      .help-demo-category { flex-wrap: wrap; gap: 5px; padding: 8px; align-content: center; }
+      .help-demo-chip { padding: 5px 7px; border: 1px solid #E5E7EB; border-radius: 999px; background: #fff; color: #555; font-size: 8px; white-space: nowrap; }
+      .help-demo-chip-active { color: #fff; border-color: transparent; background: linear-gradient(90deg,#E43D30,#F97316); animation: helpChipPulse 1.8s ease-in-out infinite; }
+      .help-demo-dish { gap: 9px; padding: 9px; }
+      .help-demo-dish-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9px; background: #fff; color: #E43D30; font-size: 18px; }
+      .help-demo-dish-lines { display: grid; gap: 6px; width: 55px; }
+      .help-demo-dish-lines i { display: block; height: 5px; border-radius: 5px; background: #E5E7EB; }
+      .help-demo-dish-lines i:first-child { width: 95%; background: #D1D5DB; }
+      .help-demo-dish-lines i:nth-child(2) { width: 65%; }
+      .help-demo-dish-lines b { color: #E43D30; font-size: 9px; }
+      .help-demo-save { gap: 8px; padding: 9px; }
+      .help-demo-save-card { display: flex; align-items: center; gap: 6px; padding: 8px; border: 1px solid #F1D5C9; border-radius: 9px; background: #fff; color: #E43D30; font-size: 13px; }
+      .help-demo-save-card b { color: #374151; font-size: 9px; }
+      .help-demo-star { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #fff; color: #F59E0B; font-size: 19px; animation: helpStarWobble 1.7s ease-in-out infinite; }
+      .help-footer-note { display: flex; align-items: flex-start; gap: 7px; margin: 14px 2px 0; color: #777777; font-size: 10px; line-height: 1.5; }
+      .help-footer-note iconify-icon { flex: 0 0 auto; color: #E43D30; font-size: 15px; }
+      @keyframes helpChipPulse { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249,115,22,0); } 50% { transform: scale(1.06); box-shadow: 0 0 0 4px rgba(249,115,22,.12); } }
+      @keyframes helpStarWobble { 0%,100% { transform: rotate(0) scale(1); } 35% { transform: rotate(-12deg) scale(1.12); } 65% { transform: rotate(10deg) scale(1.12); } }
+
+      @media (max-width: 640px) {
+        .header-inner { padding-left: 10px; padding-right: 10px; }
+        /* Keep restaurant name on the left and retain the normal desktop brand size. */
+        .header-brand { position: static; transform: none; justify-content: flex-start; text-align: left; white-space: nowrap; flex-shrink: 0; }
+        .saved-toggle { min-height: 35px; gap: 4px; padding: 0 6px; border-radius: 10px; font-size: 9px; }
+        .saved-toggle > iconify-icon { font-size: 15px; }
+        .saved-count { min-width: 15px; height: 15px; font-size: 9px; }
+        .header-icon-button { width: 35px; min-height: 35px; border-radius: 10px; font-size: 18px; }
+        .header-actions { gap: 5px; }
+        .utility-overlay { padding: 10px; }
+        .utility-modal { padding: 15px; max-height: 88dvh; border-radius: 18px; }
+        .utility-modal-header h2 { font-size: 17px; }
+        .help-step { grid-template-columns: 90px minmax(0,1fr); gap: 9px; padding: 9px; }
+        .help-demo { min-height: 62px; }
+        .help-demo-category { gap: 4px; padding: 5px; }
+        .help-demo-chip { padding: 4px 5px; font-size: 7px; }
+        .saved-dish-thumb { width: 40px; height: 40px; flex-basis: 40px; }
+        .saved-dish-price { font-size: 10px; }
+        .category-guidance { font-size: 11px; }
+      }
+
+      @media (max-width: 360px) {
+        .saved-toggle span:not(.saved-count) { font-size: 8px; }
+        .help-step { grid-template-columns: 1fr; }
+        .help-demo { min-height: 48px; }
+      }
+
+    
+.payment-header-button{position:relative;transition:color .18s ease}.payment-header-button.has-methods{color:#e56a2f}
+.payment-mini-panel{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(15,13,11,.58);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease}.payment-mini-panel.show{opacity:1;visibility:visible;pointer-events:auto}.payment-mini-dialog{width:min(520px,100%);max-height:min(86vh,720px);overflow:auto;background:rgba(255,255,255,.98);border:1px solid rgba(220,210,195,.8);border-radius:24px;box-shadow:0 24px 90px rgba(0,0,0,.3);padding:18px;transform:translateY(12px) scale(.98);transition:transform .22s ease}.payment-mini-panel.show .payment-mini-dialog{transform:translateY(0) scale(1)}.payment-mini-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid #eee7df}.payment-mini-kicker{font-size:9px;letter-spacing:.16em;font-weight:800;color:#d97736}.payment-mini-head h3{font-size:19px;font-weight:800;color:#29231f;margin-top:3px}.payment-mini-close{width:36px;height:36px;flex:0 0 36px;border-radius:50%;background:#f6f1eb;display:grid;place-items:center;color:#29231f}.payment-mini-content{display:grid;gap:11px;padding-top:14px}.payment-method-card{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid #eee7df;border-radius:16px;background:#fff}.payment-method-qr{width:72px;height:72px;flex:0 0 72px;object-fit:contain;border-radius:10px;background:#faf8f5}.payment-method-info{flex:1;min-width:0}.payment-method-name{font-size:13px;font-weight:800;color:#29231f}.payment-method-detail{font-size:11px;color:#746b63;overflow-wrap:anywhere;margin-top:4px}.payment-method-note{font-size:10px;color:#9a6b46;margin-top:4px}.payment-copy-button{margin-top:8px;border:1px solid #f0d6c2;background:#fff8f2;color:#b95b20;border-radius:9px;padding:7px 11px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:6px}.payment-empty{font-size:12px;color:#81766c;padding:18px;text-align:center}
+  /* Performance: avoid off-screen dish layout work on long menus. */
+      html { scroll-behavior: auto !important; }
+      #menu > article { content-visibility: auto; contain-intrinsic-size: auto 360px; }
+    </style>
+  <style id="eddy-brand-guard">html{visibility:hidden!important}</style>
+</head>
+
+  <body>
+    <!-- HEADER -->
+    <nav class="glass-nav fixed top-0 inset-x-0 z-40 h-20 flex items-center">
+      <div class="header-inner mx-auto w-full max-w-6xl px-4 flex items-center justify-between">
+        <div class="header-brand flex items-center gap-3">
+          <div id="restaurantBrandMark" style="width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#F97316;color:#fff;font-size:16px;font-weight:800;flex-shrink:0">R</div>
+          <div>
+            <h1 class="text-lg leading-tight">HAWI</h1>
+          </div>
+        </div>
+        <div class="header-actions flex items-center gap-2">
+          <button id="savedToggle" type="button" class="saved-toggle" aria-label="View saved dishes" title="View saved dishes">
+            <iconify-icon icon="lucide:star" aria-hidden="true"></iconify-icon>
+            <span>SAVED</span>
+            <span id="savedCount" class="saved-count" aria-label="Saved dish count">0</span>
+          </button>
+          <button id="paymentToggle" type="button" class="header-icon-button payment-header-button" aria-label="View payment methods" title="Payment methods"><iconify-icon icon="lucide:wallet" aria-hidden="true"></iconify-icon></button>
+          <button id="helpToggle" type="button" class="header-icon-button" aria-label="How to use HAWI menu" title="How to use HAWI menu">
+            <iconify-icon icon="lucide:info" aria-hidden="true"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- FILTER BAR + MENU: one tall section keeps the category bar sticky for the full menu -->
+    <section id="menuBrowseArea" class="menu-browse-area mx-auto max-w-6xl px-4">
+      <div class="mb-4">
+        <!-- Food / Drink switch -->
+        <div id="kindBar" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- The sentinel detects when the category row reaches the fixed header. -->
+      <div id="categoryPinSentinel" aria-hidden="true"></div>
+
+      <!-- Category chips stay visible while browsing; chips themselves keep their normal styling. -->
+      <div id="categoryControls" class="flex items-start gap-2">
+        <div id="catBar" class="flex flex-1 min-w-0 flex-wrap gap-2"></div>
+
+        <button
+          id="searchToggle"
+          type="button"
+          class="search-toggle w-10 h-10 shrink-0 rounded-xl grid place-items-center transition hover:bg-primary/10"
+          title="Search and filter menu"
+          aria-label="Show search and price filters"
+          aria-expanded="false"
+          aria-controls="searchPanel"
+        >
+          <iconify-icon icon="lucide:search" class="text-xl"></iconify-icon>
+        </button>
+      </div>
+      <div id="categoryGuidance" class="category-guidance" role="status" aria-live="polite" hidden>
+        <iconify-icon icon="lucide:arrow-up-circle" aria-hidden="true"></iconify-icon>
+        <span>Please select a category to browse the menu.</span>
+      </div>
+
+      <!-- Search and all price filters are hidden until the search icon is clicked -->
+      <div id="searchPanel" class="hidden card p-4 space-y-3 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1 min-w-0">
+            <iconify-icon icon="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 text-steel"></iconify-icon>
+
+            <input
+              id="q"
+              placeholder="Search a dish or a price…"
+              class="w-full rounded-xl border border-cool pl-9 pr-3 py-2.5 text-sm"
+            />
+          </div>
+
+          <button
+            id="clearBtn"
+            type="button"
+            class="w-11 h-11 shrink-0 rounded-xl border border-cool bg-white grid place-items-center hover:border-primary transition"
+            title="Clear filters"
+            aria-label="Clear filters"
+          >
+            <iconify-icon icon="lucide:rotate-ccw"></iconify-icon>
+          </button>
+          <button
+            id="searchClose"
+            type="button"
+            class="search-close-icon shrink-0"
+            title="Close search panel"
+            aria-label="Close search panel"
+          >
+            <iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon>
+          </button>
+        </div>
+
+        <div class="space-y-2">
+          <p class="text-xs font-bold text-steel">Filter by price</p>
+          <div id="priceChips" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <input
+            id="pMin"
+            type="number"
+            min="0"
+            placeholder="Min ETB"
+            aria-label="Minimum price in ETB"
+            class="w-28 rounded-xl border border-cool px-3 py-2 text-sm"
+          />
+
+          <span class="text-steel text-sm">to</span>
+
+          <input
+            id="pMax"
+            type="number"
+            min="0"
+            placeholder="Max ETB"
+            aria-label="Maximum price in ETB"
+            class="w-28 rounded-xl border border-cool px-3 py-2 text-sm"
+          />
+
+          <button id="pApply" type="button" class="chip on">Apply</button>
+        </div>
+
+        <p id="resultInfo" class="text-xs text-steel"></p>
+      </div>
+
+      <!-- MENU -->
+      <main class="py-6">
+        <div id="menu" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </main>
+    </section>
+
+    <!-- SAVED DISHES: stored locally on this visitor's browser -->
+    <div id="savedOverlay" class="utility-overlay" hidden aria-hidden="true">
+      <section class="utility-modal saved-modal" role="dialog" aria-modal="true" aria-labelledby="savedTitle">
+        <div class="utility-modal-header">
+          <div class="utility-title-group">
+            <span class="utility-modal-mark"><iconify-icon icon="lucide:star" aria-hidden="true"></iconify-icon></span>
+            <div>
+              <h2 id="savedTitle">Saved dishes</h2>
+              <p>Your favourites to remember</p>
+            </div>
+          </div>
+          <button id="savedClose" type="button" class="utility-close" aria-label="Close saved dishes" title="Close"><iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon></button>
+        </div>
+        <div id="savedDishesList" class="saved-dishes-list"></div>
+        <div class="saved-total-row">
+          <div><p class="saved-total-label">Total for saved dishes</p><p class="saved-total-note">Calculated as one of each dish</p></div>
+          <strong id="savedTotal">0.00 ETB</strong>
+        </div>
+      </section>
+    </div>
+
+    <div id="paymentMiniPanel" class="payment-mini-panel" aria-live="polite" aria-hidden="true"><section class="payment-mini-dialog" role="dialog" aria-modal="true" aria-labelledby="paymentMiniTitle"><div class="payment-mini-head"><div><span class="payment-mini-kicker">PAYMENT OPTIONS</span><h3 id="paymentMiniTitle">How you can pay</h3></div><button id="paymentMiniClose" type="button" class="payment-mini-close" aria-label="Close payment options"><iconify-icon icon="lucide:x"></iconify-icon></button></div><div id="paymentMiniContent" class="payment-mini-content"></div></section></div>
+
+    <!-- QUICK GUIDE: simple instructions with small animated examples -->
+    <div id="helpOverlay" class="utility-overlay" hidden aria-hidden="true">
+      <section class="utility-modal help-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+        <div class="utility-modal-header">
+          <div class="utility-title-group">
+            <span class="utility-modal-mark"><iconify-icon icon="lucide:info" aria-hidden="true"></iconify-icon></span>
+            <div>
+              <h2 id="helpTitle">How to use HAWI</h2>
+              <p>A quick guide to exploring the menu</p>
+            </div>
+          </div>
+          <button id="helpClose" type="button" class="utility-close" aria-label="Close guide" title="Close"><iconify-icon icon="lucide:x" aria-hidden="true"></iconify-icon></button>
+        </div>
+        <div class="help-steps">
+          <article class="help-step">
+            <div class="help-demo help-demo-category" aria-hidden="true"><span class="help-demo-chip">Food</span><span class="help-demo-chip help-demo-chip-active">Breakfast</span><span class="help-demo-chip">Drinks</span></div>
+            <div><h3>1. Choose a category</h3><p>Tap a category, such as Breakfast or Drinks, to narrow the menu. Use All to see every dish.</p></div>
+          </article>
+          <article class="help-step">
+            <div class="help-demo help-demo-dish" aria-hidden="true"><span class="help-demo-dish-icon"><iconify-icon icon="lucide:utensils"></iconify-icon></span><span class="help-demo-dish-lines"><i></i><i></i><b>250 ETB</b></span></div>
+            <div><h3>2. Search and explore</h3><p>Scroll through the cards to see each dish's image, name, description, and price. Tap the search icon to find a dish by name (such as “kitfo”) or price (such as “250”). You can also use the quick price ranges or enter a minimum and maximum price, then tap Apply.</p></div>
+          </article>
+          <article class="help-step">
+            <div class="help-demo help-demo-save" aria-hidden="true"><span class="help-demo-save-card"><iconify-icon icon="lucide:utensils"></iconify-icon><b>Dish</b></span><span class="help-demo-star"><iconify-icon icon="lucide:star"></iconify-icon></span></div>
+            <div><h3>3. Save your favourites</h3><p>Tap the small star at the bottom of a dish card. Open SAVED at the top to review your saved dishes and their total price.</p></div>
+          </article>
+        </div>
+        <p class="help-footer-note"><iconify-icon icon="lucide:heart" aria-hidden="true"></iconify-icon> Saved dishes stay on this browser. They are a reminder list, not an order.</p>
+      </section>
+    </div>
+
+
+    <!-- EDDY TECH DEVELOPER ATTRIBUTION -->
+    <footer class="mx-auto w-full max-w-6xl px-4">
+      <div class="footer-attribution-row">
+        <div class="developer-attribution">
+          <span>
+            Developed by
+            <strong class="brand-script">Three Creatives</strong>
+            <span class="brand-divider">|</span>
+            <strong class="brand-tech">EDDY TECH</strong>
+          </span>
+
+          <div class="eddy-mark" aria-label="EDDY TECH animated verification symbol">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <path
+                class="em-outline"
+                d="M43 69 H35 C24 69 19 61 22 51 C24 43 31 39 39 40 C42 26 54 19 66 23 C75 25 80 32 81 40 C91 41 97 49 95 58 C94 65 88 69 80 69 H76"
+                fill="none"
+                stroke="#111111"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <g class="em-power" fill="none" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M59 32 V54" />
+                <path d="M49 45 A15 15 0 1 0 69 45" />
+              </g>
+
+              <path
+                class="em-shield"
+                d="M60 17 L91 29 V53 C91 72 77 89 60 100 C43 89 29 72 29 53 V29 Z"
+                fill="none"
+                stroke="#111111"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              <path
+                class="em-check"
+                d="M43 57 L55 69 L78 44"
+                fill="none"
+                stroke="#111111"
+                stroke-width="4.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ---------- Connection to the live menu database ---------- */
+      const SUPABASE_URL = "https://arelkkugmhzcgksfjxre.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_xchrADkFKzcQCFSsXTuwbQ_1Qw_VQQY";
+      const EDDY_SITE_CONFIG = window.EDDY_SITE_CONFIG || {};
+      const RESTAURANT_ID = String(EDDY_SITE_CONFIG.restaurantId || "00000000-0000-4000-8000-000000000000");
+      const EDDY_PREVIEW_MODE = !!EDDY_SITE_CONFIG.preview;
+      const H = { apikey: SUPABASE_KEY, "x-client-info": "eddy-digital-menu-site/" + RESTAURANT_ID };
+
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => document.querySelectorAll(s);
+      const money = (n) => Number(n || 0).toFixed(2) + " ETB";
+      const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[c]));
+      const kindOf = (m) => String(m && m.kind || "").toLowerCase() === "drink" ? "drink" : "food";
+
+      let ITEMS = [];
+      let CATS = [];
+      let hasLoaded = false;
+
+      const PRICE_BANDS = [
+        { id: "u200", label: "Under 200", icon: "lucide:coins" },
+        { id: "200500", label: "200 – 500", icon: "lucide:coins" },
+        { id: "5001000", label: "500 – 1000", icon: "lucide:banknote" },
+        { id: "o1000", label: "Over 1000", icon: "lucide:gem" }
+      ];
+
+      const F = {
+        kind: "all",
+        cat: "all",
+        q: "",
+        band: null,
+        min: null,
+        max: null
+      };
+
+      const SAVED_DISHES_KEY = "eddy_saved_dishes_" + RESTAURANT_ID;
+      const CATEGORY_GUIDANCE_SESSION_KEY = "eddy_category_guidance_" + RESTAURANT_ID;
+      let hasExplicitlySelectedCategory = false;
+      let categoryGuidanceShown = false;
+
+      function dishKey(m) {
+        return String(m && m.id != null ? m.id : `${m && m.name || ""}|${m && m.category || ""}|${m && m.price || 0}`);
+      }
+
+      function getSavedDishes() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(SAVED_DISHES_KEY) || "[]");
+          return Array.isArray(saved) ? saved.filter((item) => item && typeof item === "object") : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveSavedDishes(items) {
+        try { localStorage.setItem(SAVED_DISHES_KEY, JSON.stringify(items)); } catch (error) { /* Browser storage may be unavailable. */ }
+        updateSavedCount();
+      }
+
+      function isDishSaved(item) {
+        const key = dishKey(item);
+        return getSavedDishes().some((saved) => String(saved.key) === key);
+      }
+
+      function updateSavedCount() {
+        const count = document.getElementById("savedCount");
+        if (count) count.textContent = String(getSavedDishes().length);
+      }
+
+      function toggleSavedDish(key) {
+        const saved = getSavedDishes();
+        const index = saved.findIndex((item) => String(item.key) === String(key));
+        if (index >= 0) {
+          saved.splice(index, 1);
+        } else {
+          const dish = ITEMS.find((item) => dishKey(item) === String(key));
+          if (!dish) return;
+          saved.push({
+            key: dishKey(dish),
+            id: dish.id ?? null,
+            name: String(dish.name || "Dish"),
+            category: String(dish.category || ""),
+            kind: kindOf(dish),
+            price: Number(dish.price || 0),
+            image_url: String(dish.image_url || ""),
+            description: String(dish.description || "")
+          });
+        }
+        saveSavedDishes(saved);
+        renderMenu();
+        renderSavedDishes();
+      }
+
+      function renderSavedDishes() {
+        const list = document.getElementById("savedDishesList");
+        const total = document.getElementById("savedTotal");
+        if (!list || !total) return;
+        const saved = getSavedDishes();
+        if (!saved.length) {
+          list.innerHTML = `<div class="saved-empty"><iconify-icon icon="lucide:star"></iconify-icon><strong>No saved dishes yet</strong><p>Tap the star at the bottom of any dish card to keep it here.</p></div>`;
+          total.textContent = money(0);
+          updateSavedCount();
+          return;
+        }
+        list.innerHTML = saved.map((item) => {
+          const thumb = item.image_url
+            ? `<img src="${esc(item.image_url)}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.querySelector('iconify-icon').style.display='block'"> <iconify-icon icon="lucide:utensils" style="display:none"></iconify-icon>`
+            : `<iconify-icon icon="lucide:utensils" aria-hidden="true"></iconify-icon>`;
+          return `<div class="saved-dish-row">
+            <div class="saved-dish-thumb">${thumb}</div>
+            <div class="saved-dish-copy"><strong>${esc(item.name || "Dish")}</strong><span>${esc(item.category || (item.kind === "drink" ? "Drink" : "Food"))}</span></div>
+            <span class="saved-dish-price">${money(item.price)}</span>
+            <button type="button" class="saved-remove" data-remove-saved="${esc(item.key)}" aria-label="Remove ${esc(item.name || "dish")} from saved dishes" title="Remove"><iconify-icon icon="lucide:x"></iconify-icon></button>
+          </div>`;
+        }).join("");
+        total.textContent = money(saved.reduce((sum, item) => sum + Number(item.price || 0), 0));
+        list.querySelectorAll("[data-remove-saved]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const next = getSavedDishes().filter((item) => String(item.key) !== button.dataset.removeSaved);
+            saveSavedDishes(next);
+            renderMenu();
+            renderSavedDishes();
+          });
+        });
+        updateSavedCount();
+      }
+
+      function openUtilityModal(id) {
+        const overlay = document.getElementById(id);
+        if (!overlay) return;
+        if (id === "savedOverlay") renderSavedDishes();
+        overlay.hidden = false;
+        overlay.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => overlay.classList.add("is-open"));
+        document.body.classList.add("utility-modal-open");
+      }
+
+      function closeUtilityModal(id) {
+        const overlay = document.getElementById(id);
+        if (!overlay) return;
+        const wasOpen = !overlay.hidden || overlay.classList.contains("is-open");
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+        window.setTimeout(() => { overlay.hidden = true; }, 240);
+        if (!document.querySelector('.utility-overlay.is-open')) document.body.classList.remove("utility-modal-open");
+        if (id === "savedOverlay" && wasOpen) document.dispatchEvent(new CustomEvent("eddy:saved-dishes-closed"));
+      }
+
+      function maybeShowCategoryGuidance() {
+        if (hasExplicitlySelectedCategory || categoryGuidanceShown) return;
+        try {
+          if (sessionStorage.getItem(CATEGORY_GUIDANCE_SESSION_KEY) === "1") {
+            categoryGuidanceShown = true;
+            return;
+          }
+        } catch (error) { /* Continue without session storage. */ }
+        if (window.scrollY < 520) return;
+        categoryGuidanceShown = true;
+        try { sessionStorage.setItem(CATEGORY_GUIDANCE_SESSION_KEY, "1"); } catch (error) { /* Continue without session storage. */ }
+        const controls = document.getElementById("categoryControls");
+        const guidance = document.getElementById("categoryGuidance");
+        if (guidance) guidance.hidden = false;
+        if (controls) {
+          controls.classList.add("category-needs-attention");
+          const searchButton = document.getElementById("searchToggle");
+          if (searchButton) searchButton.classList.add("category-search-attention");
+
+          window.setTimeout(() => {
+            controls.classList.remove("category-needs-attention");
+            if (searchButton) searchButton.classList.remove("category-search-attention");
+          }, 2600);
+
+          /* Keep the visitor in control of scrolling; only highlight the category controls. */
+        }
+      }
+
+      function clearCategoryGuidance() {
+        const guidance = document.getElementById("categoryGuidance");
+        const controls = document.getElementById("categoryControls");
+        if (guidance) guidance.hidden = true;
+        if (controls) controls.classList.remove("category-needs-attention");
+      }
+
+      function setMenuMessage(message, isError) {
+        $("#menu").innerHTML = `<div class="card p-10 text-center sm:col-span-2 lg:col-span-3">
+          <div class="mx-auto w-14 h-14 rounded-2xl bg-cloud grid place-items-center text-steel text-2xl">
+            <iconify-icon icon="${isError ? "lucide:alert-triangle" : "lucide:utensils"}"></iconify-icon>
+          </div>
+          <h3 class="mt-4 text-lg">${isError ? "Menu unavailable" : "Loading today's menu"}</h3>
+          <p class="text-sm ${isError ? "text-primary" : "text-steel"} mt-1">${esc(message)}</p>
+        </div>`;
+      }
+
+      /* ---------- Read menu and category data from Supabase ---------- */
+      async function loadAll() {
+        if (!hasLoaded && !ITEMS.length) {
+          setMenuMessage("Please wait while we load the latest dishes…", false);
+        }
+
+        try {
+          const [mRes, cRes] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/menus?select=*&restaurant_id=eq.${encodeURIComponent(RESTAURANT_ID)}&is_active_today=eq.true&order=created_at.desc`, { headers: H }),
+            fetch(`${SUPABASE_URL}/rest/v1/menu_categories?select=*&restaurant_id=eq.${encodeURIComponent(RESTAURANT_ID)}&order=sort_order.asc,name.asc`, { headers: H })
+          ]);
+
+          if (!mRes.ok) {
+            const detail = (await mRes.text()).slice(0, 220);
+            throw new Error(`Could not load the menu (${mRes.status}). ${detail}`);
+          }
+
+          const menuRows = await mRes.json();
+          const catRows = cRes.ok ? await cRes.json() : [];
+          const freshItems = Array.isArray(menuRows) ? menuRows : [];
+          const fromItems = [...new Set(freshItems.map((m) => m.category).filter(Boolean))];
+
+          let categories = catRows.length
+            ? catRows.map((r) => ({ name: r.name, pinned: !!r.pinned }))
+            : fromItems.map((name) => ({ name, pinned: false }));
+
+          fromItems.forEach((name) => {
+            if (!categories.some((c) => String(c.name).toLowerCase() === String(name).toLowerCase())) {
+              categories.push({ name, pinned: false });
+            }
+          });
+
+          ITEMS = freshItems;
+          CATS = categories;
+          hasLoaded = true;
+          renderBars();
+          renderMenu();
+        } catch (error) {
+          // If a periodic refresh fails, keep the menu already displayed.
+          if (!hasLoaded) {
+            setMenuMessage(error && error.message ? error.message : "Please check the connection and refresh the page.", true);
+            $("#resultInfo").textContent = "";
+          }
+          console.error("HAWI menu loading error:", error);
+        }
+      }
+
+      /* ---------- Category, kind, search, and price filtering ---------- */
+      function inSelectedPriceBand(price) {
+        if (!F.band) return true;
+        if (F.band === "u200") return price < 200;
+        if (F.band === "200500") return price >= 200 && price <= 500;
+        if (F.band === "5001000") return price > 500 && price <= 1000;
+        if (F.band === "o1000") return price > 1000;
+        return true;
+      }
+
+      function filtered() {
+        const q = F.q.trim().toLowerCase();
+
+        return ITEMS.filter((m) => {
+          if (F.kind !== "all" && kindOf(m) !== F.kind) return false;
+
+          if (F.cat !== "all" && String(m.category || "").toLowerCase() !== F.cat.toLowerCase()) {
+            return false;
+          }
+
+          const price = Number(m.price || 0);
+          if (F.band && !inSelectedPriceBand(price)) return false;
+          if (F.min != null && price < F.min) return false;
+          if (F.max != null && price > F.max) return false;
+
+          if (!q) return true;
+
+          const text = `${m.name || ""} ${m.description || ""} ${m.category || ""}`.toLowerCase();
+          const under = /^(under|below|less than|<|<=|max)\s*([\d.]+)$/.exec(q);
+          if (under) return price < Number(under[2]);
+
+          const over = /^(over|above|more than|>|>=|min)\s*([\d.]+)$/.exec(q);
+          if (over) return price > Number(over[2]);
+
+          const range = /^([\d.]+)\s*(?:-|to)\s*([\d.]+)$/.exec(q);
+          if (range) return price >= Number(range[1]) && price <= Number(range[2]);
+
+          if (/^[\d.]+$/.test(q)) {
+            return price === Number(q) || String(price).includes(q) || price.toFixed(2).includes(q);
+          }
+
+          return text.includes(q);
+        });
+      }
+
+      function renderBars() {
+        const count = (fn) => ITEMS.filter(fn).length;
+
+        $("#kindBar").innerHTML = `
+          <button type="button" data-kind="all" class="chip ${F.kind === "all" ? "on" : ""}">
+            <iconify-icon icon="lucide:layout-grid"></iconify-icon> All (${ITEMS.length})
+          </button>
+          <button type="button" data-kind="food" class="chip ${F.kind === "food" ? "on" : ""}">
+            <iconify-icon icon="lucide:utensils"></iconify-icon> Food (${count((m) => kindOf(m) === "food")})
+          </button>
+          <button type="button" data-kind="drink" class="chip ${F.kind === "drink" ? "on" : ""}">
+            <iconify-icon icon="lucide:cup-soda"></iconify-icon> Drinks (${count((m) => kindOf(m) === "drink")})
+          </button>`;
+
+        /* Show only the categories that belong to the selected Food/Drinks filter.
+           When All is selected, keep the complete category list. */
+        const categoryItems = F.kind === "all"
+          ? ITEMS
+          : ITEMS.filter((m) => kindOf(m) === F.kind);
+        const availableCategoryNames = new Set(
+          categoryItems
+            .map((m) => String(m.category || "").trim().toLowerCase())
+            .filter(Boolean)
+        );
+        const ordered = CATS
+          .filter((c) => F.kind === "all" || availableCategoryNames.has(String(c.name || "").trim().toLowerCase()))
+          .slice()
+          .sort((a, b) => (Number(!!b.pinned) - Number(!!a.pinned)));
+        const isPhoneLayout = window.matchMedia("(max-width: 640px)").matches;
+        const categoryCount = (categoryName) => categoryItems.filter(
+          (m) => String(m.category || "").toLowerCase() === String(categoryName || "").toLowerCase()
+        ).length;
+
+        /* In Food or Drinks mode, show only the matching category chips. The All
+           category option is available only in the combined All menu view. */
+        $("#catBar").innerHTML = (F.kind === "all" ? `
+          <button type="button" data-cat="all" class="chip ${F.cat === "all" ? "on" : ""}">
+            <iconify-icon icon="lucide:list"></iconify-icon> All
+          </button>` : "") + ordered.map((c) => {
+            const n = categoryCount(c.name);
+            /* Keep empty/pinned categories in All; Food and Drinks show only matching categories. */
+            if (F.kind !== "all" && !n) return "";
+            if (F.kind === "all" && !isPhoneLayout && !n && !c.pinned) return "";
+            return `<button type="button" data-cat="${esc(c.name)}" class="chip ${F.cat.toLowerCase() === String(c.name).toLowerCase() ? "on" : ""}">
+              ${c.pinned ? '<iconify-icon icon="lucide:star"></iconify-icon>' : ""}
+              ${esc(c.name)} (${n})
+            </button>`;
+          }).join("");
+
+        $("#priceChips").innerHTML = PRICE_BANDS.map((b) => `
+          <button type="button" data-band="${b.id}" class="chip ${F.band === b.id ? "on" : ""}">
+            <iconify-icon icon="${b.icon}"></iconify-icon> ${b.label}
+          </button>`).join("");
+
+        $$("#kindBar [data-kind]").forEach((button) => {
+          button.onclick = () => {
+            F.kind = button.dataset.kind;
+            /* Switch back to all categories so an old category cannot hide new results. */
+            F.cat = "all";
+            hasExplicitlySelectedCategory = false;
+            clearCategoryGuidance();
+            renderBars();
+            renderMenu();
+          };
+        });
+
+        $$("#catBar [data-cat]").forEach((button) => {
+          button.onclick = () => {
+            F.cat = button.dataset.cat;
+            hasExplicitlySelectedCategory = true;
+            clearCategoryGuidance();
+            renderBars();
+            renderMenu();
+          };
+        });
+
+        $$("#priceChips [data-band]").forEach((button) => {
+          button.onclick = () => {
+            const nextBand = button.dataset.band;
+            F.band = F.band === nextBand ? null : nextBand;
+            F.min = null;
+            F.max = null;
+            $("#pMin").value = "";
+            $("#pMax").value = "";
+            renderBars();
+            renderMenu();
+          };
+        });
+      }
+
+      /* ---------- Menu cards plus the local saved-dishes star ---------- */
+      function renderMenu() {
+        const rows = filtered();
+        const savedKeys = new Set(getSavedDishes().map((item) => String(item.key)));
+        $("#resultInfo").textContent = `${rows.length} of ${ITEMS.length} menu items shown`;
+
+        $("#menu").innerHTML = rows.length
+          ? rows.map((m) => {
+              const k = kindOf(m);
+              const key = dishKey(m);
+              const saved = savedKeys.has(key);
+              const image = m.image_url
+                ? `<div class="menu-image-wrap">
+                    <img src="${esc(m.image_url)}" alt="${esc(m.name)}" loading="lazy" class="w-full h-40 object-cover" onerror="this.closest('.menu-image-wrap').remove()">
+                    <span class="menu-category-tag">${esc(m.category || "Dish")}</span>
+                  </div>`
+                : `<div class="menu-image-wrap h-40 bg-cloud grid place-items-center text-steel text-2xl" aria-hidden="true"><iconify-icon icon="lucide:utensils"></iconify-icon><span class="menu-category-tag">${esc(m.category || "Dish")}</span></div>`;
+
+              return `<article class="card overflow-hidden flex flex-col">
+                ${image}
+                <div class="p-4 flex-1 flex flex-col">
+                  <div class="flex items-start gap-2">
+                    <span class="kd" title="${k === "drink" ? "Drink" : "Food"}" role="img" aria-label="${k === "drink" ? "Drink" : "Food"}">
+                      <iconify-icon icon="${k === "drink" ? "lucide:cup-soda" : "lucide:utensils"}" aria-hidden="true"></iconify-icon>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-base leading-tight">${esc(m.name)}</h3>
+                      <p class="text-xs text-steel">${esc(m.category || "")}</p>
+                    </div>
+                  </div>
+                  <p class="text-sm text-steel mt-2 line-clamp-2">${esc(m.description || "")}</p>
+                  <div class="mt-4 pt-2 border-t border-cool dish-price-save-row">
+                    <span class="font-display text-lg brand-text">${money(m.price)}</span>
+                    <button type="button" class="dish-save-button ${saved ? "is-saved" : ""}" data-save-dish="${esc(key)}" aria-label="${saved ? "Remove from saved dishes" : "Save dish"}: ${esc(m.name)}" aria-pressed="${saved ? "true" : "false"}" title="${saved ? "Remove from saved" : "Save this dish"}"><iconify-icon icon="lucide:star" aria-hidden="true"></iconify-icon></button>
+                  </div>
+                </div>
+              </article>`;
+            }).join("")
+          : `<div class="card p-10 text-center sm:col-span-2 lg:col-span-3">
+              <div class="mx-auto w-14 h-14 rounded-2xl bg-cloud grid place-items-center text-steel text-2xl">
+                <iconify-icon icon="lucide:search-x"></iconify-icon>
+              </div>
+              <h3 class="mt-4 text-lg">Nothing matches</h3>
+              <p class="text-sm text-steel mt-1">Try another category, food/drink type, search, or price range.</p>
+            </div>`;
+
+        updateSavedCount();
+      }
+
+      $("#menu").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-save-dish]");
+        if (button) toggleSavedDish(button.dataset.saveDish);
+      });
+
+      /* ---------- Search and price-filter panel ---------- */
+      function setSearchPanelOpen(opening) {
+        const panel = $("#searchPanel");
+        panel.classList.toggle("hidden", !opening);
+        $("#searchToggle").classList.toggle("on", opening);
+        $("#searchToggle").setAttribute("aria-expanded", String(opening));
+        $("#searchToggle").setAttribute("aria-label", opening ? "Hide search and price filters" : "Show search and price filters");
+        if (opening) $("#q").focus();
+      }
+
+      $("#searchToggle").onclick = () => {
+        const opening = $("#searchPanel").classList.contains("hidden");
+        setSearchPanelOpen(opening);
+      };
+
+      /* Close the search/filter panel with the plain X; keep current filters intact. */
+      $("#searchClose").onclick = () => setSearchPanelOpen(false);
+
+      $("#q").oninput = (event) => {
+        F.q = event.target.value;
+        renderMenu();
+      };
+
+      $("#pApply").onclick = () => {
+        const min = $("#pMin").value.trim() === "" ? null : Number($("#pMin").value);
+        const max = $("#pMax").value.trim() === "" ? null : Number($("#pMax").value);
+
+        if (min !== null && (!Number.isFinite(min) || min < 0)) {
+          $("#resultInfo").textContent = "Enter a valid minimum price (0 or more).";
+          return;
+        }
+        if (max !== null && (!Number.isFinite(max) || max < 0)) {
+          $("#resultInfo").textContent = "Enter a valid maximum price (0 or more).";
+          return;
+        }
+        if (min !== null && max !== null && min > max) {
+          $("#resultInfo").textContent = "Minimum price cannot be greater than maximum price.";
+          return;
+        }
+
+        F.min = min;
+        F.max = max;
+        F.band = null;
+        renderBars();
+        renderMenu();
+      };
+
+      $("#clearBtn").onclick = () => {
+        F.kind = "all";
+        F.cat = "all";
+        F.q = "";
+        F.band = null;
+        F.min = null;
+        F.max = null;
+        $("#q").value = "";
+        $("#pMin").value = "";
+        $("#pMax").value = "";
+        renderBars();
+        renderMenu();
+      };
+
+      /* ---------- Saved-dishes list and short usage guide ---------- */
+      $("#savedToggle").addEventListener("click", () => openUtilityModal("savedOverlay"));
+      $("#helpToggle").addEventListener("click", () => openUtilityModal("helpOverlay"));
+      $("#savedClose").addEventListener("click", () => closeUtilityModal("savedOverlay"));
+      $("#helpClose").addEventListener("click", () => closeUtilityModal("helpOverlay"));
+      ["savedOverlay", "helpOverlay"].forEach((id) => {
+        const overlay = document.getElementById(id);
+        overlay.addEventListener("click", (event) => {
+          if (event.target === overlay) closeUtilityModal(id);
+        });
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeUtilityModal("savedOverlay");
+          closeUtilityModal("helpOverlay");
+        }
+      });
+      function updateCategoryPinState() {
+        const sentinel = document.getElementById("categoryPinSentinel");
+        const controls = document.getElementById("categoryControls");
+        const nav = document.querySelector(".glass-nav");
+        if (!sentinel || !controls || !nav) return;
+
+        const headerBottom = nav.getBoundingClientRect().bottom;
+        const isPinned = window.scrollY > 0 && sentinel.getBoundingClientRect().top <= headerBottom + 1;
+        controls.classList.toggle("is-pinned", isPinned);
+        nav.classList.toggle("is-category-pinned", isPinned);
+      }
+
+      window.addEventListener("scroll", () => {
+        maybeShowCategoryGuidance();
+        updateCategoryPinState();
+      }, { passive: true });
+      window.addEventListener("resize", updateCategoryPinState, { passive: true });
+      requestAnimationFrame(updateCategoryPinState);
+      updateSavedCount();
+
+
+      /* Initial menu load and periodic refresh keep the menu connected to its own restaurant record. */
+      if (EDDY_PREVIEW_MODE) { setMenuMessage("Empty preview — menu items will appear after the restaurant is created.", false); }
+      else { loadAll(); setInterval(loadAll, 60000); }
+    
+(function(){
+ const panel=document.getElementById('paymentMiniPanel'),btn=document.getElementById('paymentToggle'),close=document.getElementById('paymentMiniClose'),content=document.getElementById('paymentMiniContent');
+ let rows=[];
+ function escHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+ function render(){
+  btn.classList.toggle('has-methods',rows.length>0);
+  content.innerHTML=rows.length?rows.map((p,i)=>'<article class="payment-method-card">'+(p.qr_url?'<img class="payment-method-qr" src="'+escHtml(p.qr_url)+'" alt="'+escHtml(p.name)+' payment QR">':'<div class="payment-method-qr grid place-items-center"><iconify-icon icon="lucide:landmark" width="25"></iconify-icon></div>')+'<div class="payment-method-info"><div class="payment-method-name">'+escHtml(p.name)+'</div>'+(p.account_holder?'<div class="payment-method-detail">Name: '+escHtml(p.account_holder)+'</div>':'')+(p.account_number?'<div class="payment-method-detail">Account: '+escHtml(p.account_number)+'</div>':'')+(p.note?'<div class="payment-method-note">'+escHtml(p.note)+'</div>':'')+(p.account_number?'<button type="button" class="payment-copy-button" data-copy-payment="'+i+'"><iconify-icon icon="lucide:copy" width="13"></iconify-icon> Copy account number</button>':'')+'</div></article>').join(''):'<p class="payment-empty">Payment methods will appear here when available.</p>';
+  content.querySelectorAll('[data-copy-payment]').forEach(function(button){button.addEventListener('click',function(){var row=rows[Number(button.getAttribute('data-copy-payment'))];if(row&&row.account_number)copyPaymentNumber(row.account_number,button)})});
+ }
+ async function refresh(){
+  if(EDDY_PREVIEW_MODE){rows=[];render();return;}
+  try{
+   const response=await fetch(`${SUPABASE_URL}/rest/v1/payment_methods?select=*&restaurant_id=eq.${encodeURIComponent(RESTAURANT_ID)}&is_active=eq.true&order=sort_order.asc,created_at.asc`,{headers:H});
+   if(!response.ok) throw new Error('Payment methods request failed');
+   const data=await response.json(); rows=Array.isArray(data)?data:[]; render();
+  }catch(e){ console.warn('Payment methods could not be loaded:',e); rows=[]; render(); }
+ }
+ async function copyPaymentNumber(value,button){
+  var text=String(value||'').trim();if(!text)return;
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text)}else{var field=document.createElement('textarea');field.value=text;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();var ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('Copy unavailable')}
+   var old=button.innerHTML;button.innerHTML='<iconify-icon icon="lucide:check" width="13"></iconify-icon> Copied';setTimeout(function(){button.innerHTML=old},1400);
+  }catch(e){window.prompt('Copy this account number:',text)}
+ }
+ function show(){panel.classList.add('show');panel.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';if(!rows.length)content.innerHTML='<p class="payment-empty">Loading payment options…</p>';close.focus();refresh();}
+ function hide(){panel.classList.remove('show');panel.setAttribute('aria-hidden','true');document.body.style.overflow='';btn.focus()}
+ btn.addEventListener('click',()=>panel.classList.contains('show')?hide():show());close.addEventListener('click',hide);
+ panel.addEventListener('click',function(event){if(event.target===panel)hide()});document.addEventListener('keydown',function(event){if(event.key==='Escape'&&panel.classList.contains('show'))hide()});
+ document.addEventListener('eddy:saved-dishes-closed',()=>{setTimeout(show,260)});
+ window.addEventListener('popstate',()=>{const saved=document.getElementById('savedOverlay');if(saved?.classList.contains('is-open')){closeUtilityModal('savedOverlay');setTimeout(show,300)}});
+refresh(); setInterval(refresh,60000);
+})();
+</script>
+  </body>
+</html>
